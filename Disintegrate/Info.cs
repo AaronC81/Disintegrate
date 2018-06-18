@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace Disintegrate
 {
+    // TODO: No warranty page
+
     /// <summary>
     /// Contains information about the Disintegrate library.
     /// </summary>
@@ -14,6 +16,6 @@ namespace Disintegrate
         /// <summary>
         /// The current library version.
         /// </summary>
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
     }
 }
