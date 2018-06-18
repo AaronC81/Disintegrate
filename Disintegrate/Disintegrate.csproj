@@ -84,7 +84,6 @@
     <Compile Include="Configuration\Configurators\GlobalOffensiveConfigurator.cs" />
     <Compile Include="Configuration\SteamLocator.cs" />
     <Compile Include="DiscordRpc.cs" />
-    <Compile Include="Info.cs" />
     <Compile Include="PresenceManager.cs" />
     <Compile Include="Providers\Dota2PresenceProvider.cs" />
     <Compile Include="PresenceInfo.cs" />
