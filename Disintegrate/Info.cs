@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace Disintegrate
 {
-    // TODO: No warranty page
-
     /// <summary>
     /// Contains information about the Disintegrate library.
     /// </summary>
