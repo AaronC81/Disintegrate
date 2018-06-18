@@ -18,31 +18,44 @@ namespace Disintegrate.UI
         /// Returns a list of <see cref="PresenceProvider"/>-based types loaded from the 
         /// DLLs of the 'providers' folder in the app folder.
         /// </summary>
-        public static (List<Type> types, List<LoadError> errors) LoadAllProviders()
+        public static (List<LoadedProvider> providers, List<LoadError> errors) LoadAllProviders()
         {
-            var types = new List<Type>();
+            var providers = new List<LoadedProvider>();
             var errors = new List<LoadError>();
 
+            // Determine provider path, creating it if it's been deleted for some reason
             var executablePath = Application.ExecutablePath;
             var appFolder = Path.GetDirectoryName(executablePath);
-            var providersFolder = $"appFolder\\providers";
+            var providersFolder = $"{appFolder}\\providers";
+            Directory.CreateDirectory(providersFolder);
 
             foreach (var providerFile in Directory.GetFiles(providersFolder))
             {
                 try
                 {
                     var assembly = Assembly.LoadFile(providerFile);
-                    var providers = assembly
+                    var loadedProviders = assembly
                         .GetTypes()
                         .Where(t => t.BaseType == typeof(PresenceProvider))
                         .ToList();
+                    var loadedConfigurators = assembly
+                        .GetTypes()
+                        .Where(t => t.BaseType == typeof(Configuration.Configurator))
+                        .ToList();
 
-                    if (providers.Count == 0)
+                    if (loadedProviders.Count != 0)
                     {
-                        throw new FileLoadException("DLL contains no PresenceProvider classes");
+                        throw new FileLoadException("DLL must contain exactly one PresenceProvider");
+                    }
+                    if (loadedConfigurators.Count != 0)
+                    {
+                        throw new FileLoadException("DLL must contain exactly one Configurator");
                     }
 
-                    types.AddRange(providers);
+                    var theProvider = loadedProviders[0];
+                    var theConfigurator = loadedProviders[1];
+
+                    providers.Add(new LoadedProvider(theProvider, theConfigurator));
                 }
                 catch (Exception e)
                 {
@@ -50,8 +63,23 @@ namespace Disintegrate.UI
                 }
             }
 
-            return (types, errors);
+            return (providers, errors);
         }
+    }
+
+    /// <summary>
+    /// Represents a successfully loaded provider and configurator.
+    /// </summary>
+    public class LoadedProvider
+    {
+        public LoadedProvider(Type provider, Type configurator)
+        {
+            Provider = provider;
+            Configurator = configurator;
+        }
+
+        public Type Provider { get; }
+        public Type Configurator { get; }
     }
 
     /// <summary>
@@ -65,7 +93,7 @@ namespace Disintegrate.UI
             Error = error;
         }
 
-        public string File { get; set; }
-        public Exception Error { get; set; }
+        public string File { get; }
+        public Exception Error { get; }
     }
 }

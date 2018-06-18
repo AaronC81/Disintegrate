@@ -10,9 +10,14 @@ namespace Disintegrate.UI
 {
     public class TrayIconContext : ApplicationContext
     {
+        // TODO: Actually show errors
         private NotifyIcon _notifyIcon;
+        private List<LoadedProvider> _loadedProviders;
+        private List<LoadError> _errors;
 
-        public TrayIconContext(bool launchNow = false) {
+        public TrayIconContext(List<LoadedProvider> loadedProviders, List<LoadError> errors, bool launchNow = false) {
+            _loadedProviders = loadedProviders;
+
             _notifyIcon = new NotifyIcon
             {
                 Icon = Resources.Icon,
@@ -21,7 +26,7 @@ namespace Disintegrate.UI
                 ContextMenu = new ContextMenu(new MenuItem[]
                 {
                     new MenuItem("Open", (s, e) => {
-                        (new Menu()).Show();
+                        ShowMenu();
                     }),
                     new MenuItem("Exit", (s, e) => {
                         _notifyIcon.Visible = false;
@@ -33,8 +38,18 @@ namespace Disintegrate.UI
 
             if (launchNow)
             {
-                (new Menu()).Show();
+                ShowMenu();
             }
+        }
+
+        private void ShowMenu()
+        {
+            var configurators = _loadedProviders.Select(p => p.Configurator).ToList();
+            var instantiatedConfigurators = configurators
+                .Select(c => (Configuration.Configurator)Activator.CreateInstance(c))
+                .ToList();
+
+            (new Menu(instantiatedConfigurators)).Show();
         }
     }
 }

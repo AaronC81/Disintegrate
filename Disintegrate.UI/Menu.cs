@@ -19,9 +19,11 @@ namespace Disintegrate.UI
         public Menu()
         {
             InitializeComponent();
+        }
 
-            _configurators.Add(new Dota2Configurator());
-            _configurators.Add(new GlobalOffensiveConfigurator());
+        public Menu(List<Configurator> configurators) : this()
+        {
+            _configurators.AddRange(configurators);
         }
 
         private void ReloadGames()
