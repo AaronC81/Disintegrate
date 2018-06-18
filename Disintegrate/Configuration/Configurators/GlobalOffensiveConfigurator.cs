@@ -9,7 +9,6 @@ namespace Disintegrate.Configuration.Configurators
 {
     public class GlobalOffensiveConfigurator : Configurator
     {
-        // TODO: Change CONFIG TO CS:GO!!!
         const int SteamId = 730;
         const string FileName = "gamestate_integration_disintegrate.cfg";
         const string Config = @"""Disintegrate Integration Configuration""
@@ -21,14 +20,16 @@ namespace Disintegrate.Configuration.Configurators
     ""heartbeat""     ""3.0""
     ""data""
     {
-        ""provider""      ""1""
-        ""map""           ""1""
-        ""player""        ""1""
-        ""hero""          ""1""
-        ""abilities""     ""1""
-        ""items""         ""1""
+        ""provider""            ""1""
+        ""map""                 ""1""
+        ""round""               ""1""
+        ""player_id""           ""1""
+        ""player_state""        ""1""
+        ""player_weapons""      ""1""
+        ""player_match_stats""  ""1""
     }
-}";
+}
+";
         public override string AppName => "CS:GO";
 
         public override List<string> Configure()
