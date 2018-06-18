@@ -22,13 +22,13 @@
         "Entry"
         {
         "MsmKey" = "8:_30DEADDDB8CF9E278A37F6A3090C5F4B"
-        "OwnerKey" = "8:_B8964A3D83760061B841618130E7DD47"
+        "OwnerKey" = "8:_94F69AD8029047E7A23B52BED40A1A22"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_30DEADDDB8CF9E278A37F6A3090C5F4B"
-        "OwnerKey" = "8:_94F69AD8029047E7A23B52BED40A1A22"
+        "OwnerKey" = "8:_B8964A3D83760061B841618130E7DD47"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -208,6 +208,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
     }
@@ -527,6 +535,17 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_0E0EB008C3EE45738E2D5BA565E6BC15"
+                    {
+                    "Name" = "8:providers"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_DC8C6FEA32274575BE2672326775EAEA"
+                        "Folders"
+                        {
+                        }
+                    }
                 }
             }
             "{1525181F-901A-416C-8A58-119130FE478E}:_8FD5A2A6F4B6441A9AAC49EEDA445BF9"
