@@ -24,19 +24,27 @@ namespace Disintegrate
         public static Dictionary<string, Type> Providers { get; } = new Dictionary<string, Type>();
 
         /// <summary>
+        /// See <see cref="Index(Type)"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static void Index<T>() where T : PresenceProvider, new() =>
+            Index(typeof(T));
+
+        /// <summary>
         /// Indexes a <see cref="PresenceProvider"/>, allowing it to be launched automatically along
         /// with a process.
         /// </summary>
-        /// <typeparam name="T">The provider.</typeparam>
-        public static void Index<T>() where T : PresenceProvider, new()
+        /// <param name="t">The provider.</param>
+        public static void Index(Type t)
         {
-            var processName = new T().ProcessName;
+            var instance = (PresenceProvider)Activator.CreateInstance(t);
+            var processName = instance.ProcessName;
 
             if (Providers.ContainsKey(processName))
             {
                 throw new Exception($"Already indexed a provider for {processName}");
             }
-            Providers[processName] = typeof(T);
+            Providers[processName] = t;
         }
 
         /// <summary>

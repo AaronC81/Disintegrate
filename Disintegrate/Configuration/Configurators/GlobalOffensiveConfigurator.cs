@@ -4,12 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Disintegrate.Configuration;
 
-namespace GlobalOffensiveProvider
+namespace Disintegrate.Configuration.Configurators
 {
     public class GlobalOffensiveConfigurator : Configurator
     {
+        // TODO: Change CONFIG TO CS:GO!!!
         const int SteamId = 730;
         const string FileName = "gamestate_integration_disintegrate.cfg";
         const string Config = @"""Disintegrate Integration Configuration""

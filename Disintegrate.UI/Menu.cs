@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Disintegrate.Configuration.Configurators;
 using Disintegrate.Configuration;
 
 namespace Disintegrate.UI
@@ -18,11 +19,9 @@ namespace Disintegrate.UI
         public Menu()
         {
             InitializeComponent();
-        }
 
-        public Menu(List<Configurator> configurators) : this()
-        {
-            _configurators.AddRange(configurators);
+            _configurators.Add(new Dota2Configurator());
+            _configurators.Add(new GlobalOffensiveConfigurator());
         }
 
         private void ReloadGames()

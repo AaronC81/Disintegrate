@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Dota2GSI;
-using Disintegrate;
 using System.Timers;
+using Dota2GSI;
 
-namespace Dota2Provider
+namespace Disintegrate.Providers
 {
+    /// <summary>
+    /// Provides presence info for DOTA 2.
+    /// </summary>
     public class Dota2PresenceProvider : PresenceProvider
     {
         public override string ProcessName => "dota2";
@@ -19,7 +20,7 @@ namespace Dota2Provider
 
         const int NoStateSeconds = 5;
         private Timer _noStateTimer;
-
+        
         public override void Start()
         {
             _gameStateListener = new GameStateListener(4000);
@@ -52,7 +53,7 @@ namespace Dota2Provider
                 state = $"{gameState.Player.Kills}/{gameState.Player.Deaths}/{gameState.Player.Assists}" +
                         $" - {gameState.Player.LastHits}LH/{gameState.Player.Denies}DN";
 
-                heroName = Dota2HeroNaming.MakeFriendlyName(gameState.Hero.Name);
+                heroName = Utilities.Dota2HeroNaming.MakeFriendlyName(gameState.Hero.Name);
                 detail = $"{heroName} - Level {gameState.Hero.Level}";
             }
 

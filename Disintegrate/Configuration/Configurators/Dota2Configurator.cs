@@ -4,9 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Disintegrate.Configuration;
 
-namespace Dota2Provider
+namespace Disintegrate.Configuration.Configurators
 {
     public class Dota2Configurator : Configurator
     {

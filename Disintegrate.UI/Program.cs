@@ -25,19 +25,14 @@ namespace Disintegrate.UI
                 return;
             }
 
-            var (providers, errors) = Loader.LoadAllProviders();
-
-            foreach (var provider in providers)
-            {
-                PresenceManager.Index(provider.Provider);
-            }
-
+            PresenceManager.Index<Providers.Dota2PresenceProvider>();
+            PresenceManager.Index<Providers.GlobalOffensivePresenceProvider>();
             PresenceManager.Start();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.Run(new TrayIconContext(providers, errors, args.Contains("show")));
+            Application.Run(new TrayIconContext(args.Contains("show")));
         }
     }
 }

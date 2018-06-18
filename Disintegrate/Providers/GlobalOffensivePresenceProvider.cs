@@ -1,14 +1,16 @@
-﻿using CSGSI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Disintegrate;
 using System.Timers;
+using CSGSI;
 
-namespace GlobalOffensiveProvider
+namespace Disintegrate.Providers
 {
+    /// <summary>
+    /// Provides presence info for Counter-Strike: Global Offensive.
+    /// </summary>
     public class GlobalOffensivePresenceProvider : PresenceProvider
     {
         public override string ProcessName => "csgo";
@@ -63,7 +65,8 @@ namespace GlobalOffensiveProvider
             var detail = $"Score: T {gameState.Map.TeamT.Score} - {gameState.Map.TeamCT.Score} CT";
 
             var activity = gameState.Player.Activity;
-            
+            System.Diagnostics.Debug.WriteLine(activity);
+
             var info = new PresenceInfo(state, detail)
             {
                 LargeImageKey = "logo",
