@@ -9,6 +9,8 @@ namespace Disintegrate.UI
 {
     static class Program
     {
+        // TODO: Single-click to open control panel
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

@@ -22,6 +22,12 @@
         "Entry"
         {
         "MsmKey" = "8:_30DEADDDB8CF9E278A37F6A3090C5F4B"
+        "OwnerKey" = "8:_B8964A3D83760061B841618130E7DD47"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_30DEADDDB8CF9E278A37F6A3090C5F4B"
         "OwnerKey" = "8:_94F69AD8029047E7A23B52BED40A1A22"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -584,15 +590,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Disintegrate"
-        "ProductCode" = "8:{205D5647-7A6A-424C-BC7B-57A871AC41E9}"
-        "PackageCode" = "8:{904BD652-43E8-47F2-A4C9-054B52A377B7}"
+        "ProductCode" = "8:{6EA5E489-0461-46A6-BCE5-96F37D8CB84B}"
+        "PackageCode" = "8:{E6836697-7E2A-4E6F-BA0E-4A8B2E9EB11C}"
         "UpgradeCode" = "8:{BC1B2F25-46E8-48BC-930B-5064DF876BBF}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.2.0"
+        "ProductVersion" = "8:1.2.1"
         "Manufacturer" = "8:Aaron Christiansen"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

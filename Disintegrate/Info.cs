@@ -14,6 +14,6 @@ namespace Disintegrate
         /// <summary>
         /// The current library version.
         /// </summary>
-        public const string Version = "1.2.0";
+        public const string Version = "1.2.1";
     }
 }
