@@ -63,8 +63,7 @@ namespace GlobalOffensiveProvider
             var detail = $"Score: T {gameState.Map.TeamT.Score} - {gameState.Map.TeamCT.Score} CT";
 
             var activity = gameState.Player.Activity;
-            System.Diagnostics.Debug.WriteLine(activity);
-
+            
             var info = new PresenceInfo(state, detail)
             {
                 LargeImageKey = "logo",
