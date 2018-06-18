@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Disintegrate.Utilities
+namespace Dota2Provider
 {
     public static class Dota2HeroNaming
     {

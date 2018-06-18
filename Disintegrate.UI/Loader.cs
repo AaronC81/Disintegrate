@@ -43,17 +43,17 @@ namespace Disintegrate.UI
                         .Where(t => t.BaseType == typeof(Configuration.Configurator))
                         .ToList();
 
-                    if (loadedProviders.Count != 0)
+                    if (loadedProviders.Count != 1)
                     {
                         throw new FileLoadException("DLL must contain exactly one PresenceProvider");
                     }
-                    if (loadedConfigurators.Count != 0)
+                    if (loadedConfigurators.Count != 1)
                     {
                         throw new FileLoadException("DLL must contain exactly one Configurator");
                     }
 
                     var theProvider = loadedProviders[0];
-                    var theConfigurator = loadedProviders[1];
+                    var theConfigurator = loadedConfigurators[0];
 
                     providers.Add(new LoadedProvider(theProvider, theConfigurator));
                 }
@@ -95,5 +95,8 @@ namespace Disintegrate.UI
 
         public string File { get; }
         public Exception Error { get; }
+
+        public override string ToString() =>
+            $"{Path.GetFileName(File)}: {Error}";
     }
 }

@@ -1,16 +1,14 @@
-﻿using System;
+﻿using CSGSI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Disintegrate;
 using System.Timers;
-using CSGSI;
 
-namespace Disintegrate.Providers
+namespace GlobalOffensiveProvider
 {
-    /// <summary>
-    /// Provides presence info for Counter-Strike: Global Offensive.
-    /// </summary>
     public class GlobalOffensivePresenceProvider : PresenceProvider
     {
         public override string ProcessName => "csgo";

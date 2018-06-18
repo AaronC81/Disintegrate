@@ -53,9 +53,6 @@
     <Reference Include="CSGSI, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CSGSI.1.2.2\lib\CSGSI.dll</HintPath>
     </Reference>
-    <Reference Include="Dota2GSI, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Dota2GSI.1.0.4\lib\Dota2GSI.dll</HintPath>
-    </Reference>
     <Reference Include="Gameloop.Vdf, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Gameloop.Vdf.0.4.4\lib\net45\Gameloop.Vdf.dll</HintPath>
     </Reference>
@@ -80,19 +77,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\Configurator.cs" />
-    <Compile Include="Configuration\Configurators\Dota2Configurator.cs" />
-    <Compile Include="Configuration\Configurators\GlobalOffensiveConfigurator.cs" />
     <Compile Include="Configuration\SteamLocator.cs" />
     <Compile Include="DiscordRpc.cs" />
     <Compile Include="Info.cs" />
     <Compile Include="PresenceManager.cs" />
-    <Compile Include="Providers\Dota2PresenceProvider.cs" />
     <Compile Include="PresenceInfo.cs" />
     <Compile Include="PresenceProvider.cs" />
     <Compile Include="PresenceRelay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\GlobalOffensivePresenceProvider.cs" />
-    <Compile Include="Utilities\Dota2HeroNaming.cs" />
     <Compile Include="StateFrequency.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
