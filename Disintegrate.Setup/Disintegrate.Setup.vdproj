@@ -22,12 +22,6 @@
         "Entry"
         {
         "MsmKey" = "8:_30DEADDDB8CF9E278A37F6A3090C5F4B"
-        "OwnerKey" = "8:_B8964A3D83760061B841618130E7DD47"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_30DEADDDB8CF9E278A37F6A3090C5F4B"
         "OwnerKey" = "8:_94F69AD8029047E7A23B52BED40A1A22"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -208,6 +202,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
     }
@@ -556,15 +558,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Disintegrate"
-        "ProductCode" = "8:{E26F3216-48BA-47FC-8159-FB1CCBCFD712}"
-        "PackageCode" = "8:{C84BB939-AEFE-4791-84ED-D7A3085631CC}"
+        "ProductCode" = "8:{FD5555FD-035C-45C9-B4CF-E3D8D3E5C25B}"
+        "PackageCode" = "8:{F30973A1-5814-457D-B055-3A9ADFC4FF2F}"
         "UpgradeCode" = "8:{BC1B2F25-46E8-48BC-930B-5064DF876BBF}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.2"
+        "ProductVersion" = "8:1.1.0"
         "Manufacturer" = "8:Aaron Christiansen"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
