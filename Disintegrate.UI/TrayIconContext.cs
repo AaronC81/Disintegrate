@@ -31,6 +31,8 @@ namespace Disintegrate.UI
                 })
             };
 
+            _notifyIcon.Click += (s, e) => (new Menu()).Show();
+
             if (launchNow)
             {
                 (new Menu()).Show();
