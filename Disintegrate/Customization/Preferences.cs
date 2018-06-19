@@ -161,5 +161,24 @@ namespace Disintegrate.Customization
             errorMessage = null;
             return true;
         }
+        
+        /// <summary>
+        /// Replaces field values by calling a function with the key to build a string.
+        /// </summary>
+        /// <returns>A tuple of line one and line two.</returns>
+        public (string, string) FillFieldsByFunction(Func<string, string> func)
+        {
+            string Fill(LinePart part)
+            {
+                return part.Kind == LinePart.PartKind.Field
+                    ? func(part.Value)
+                    : part.Value;
+            }
+
+            return (
+                string.Join("", ParseLine(LineOne).Select(Fill)),
+                string.Join("", ParseLine(LineTwo).Select(Fill))
+            );
+        }
     }
 }
