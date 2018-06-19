@@ -39,6 +39,8 @@ namespace Disintegrate.UI
                     await mgr.UpdateApp();
                 }
 
+                PresenceManager.PreferenceLoader = Customization.Loader.LoadPreferences;
+
                 PresenceManager.Index<Providers.Dota2PresenceProvider>();
                 PresenceManager.Index<Providers.GlobalOffensivePresenceProvider>();
                 PresenceManager.Start();

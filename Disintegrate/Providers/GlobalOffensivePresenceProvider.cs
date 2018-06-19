@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using CSGSI;
 using Disintegrate.Configuration;
+using Disintegrate.Customization;
 
 namespace Disintegrate.Providers
 {
@@ -14,12 +15,20 @@ namespace Disintegrate.Providers
     /// </summary>
     public class GlobalOffensivePresenceProvider : PresenceProvider
     {
+        public GlobalOffensivePresenceProvider(Preferences preferences)
+        {
+            Preferences = preferences;
+        }
+
         public override string ProcessName => "csgo";
         public override string AppId => "457492341318746113";
         public override StateFrequency StateFrequency => StateFrequency.FastAsPossible;
         public override Configurator Configurator => new Configuration.Configurators.GlobalOffensiveConfigurator();
+        public override Customizer Customizer => new Customization.Customizers.GlobalOffensiveCustomizer();
 
         private GameStateListener _gameStateListener;
+
+        public Preferences Preferences { get; }
 
         const int NoStateSeconds = 5;
         private Timer _noStateTimer;
@@ -44,10 +53,39 @@ namespace Disintegrate.Providers
         /// <param name="gameState">The new game state.</param>
         public void NewGameState(GameState gameState)
         {
+            Console.WriteLine("STATE");
+
             // The game broadcasts a '-1' state when started
             if (gameState.Player.MatchStats.Deaths == -1)
             {
                 return;
+            }
+
+            string ValueForField(string fieldName)
+            {
+                switch (fieldName)
+                {
+                    case "Kills":
+                        return gameState.Player.MatchStats.Kills.ToString();
+                    case "Deaths":
+                        return gameState.Player.MatchStats.Deaths.ToString();
+                    case "Assists":
+                        return gameState.Player.MatchStats.Assists.ToString();
+                    case "Team":
+                        switch (gameState.Player.Team)
+                        {
+                            case CSGSI.Nodes.PlayerTeam.T:
+                                return "T";
+                            case CSGSI.Nodes.PlayerTeam.CT:
+                                return "CT";
+                            default:
+                                return "??";
+                        }
+                    case "MVPs":
+                        return gameState.Player.MatchStats.MVPs.ToString();
+                    default:
+                        return "ERROR";
+                }
             }
 
             // gameState.Player refers to the player we're watching, so if we're dead, 
@@ -61,13 +99,7 @@ namespace Disintegrate.Providers
                 return;
             }
 
-            var state = $"{gameState.Player.MatchStats.Kills}/{gameState.Player.MatchStats.Assists}/{gameState.Player.MatchStats.Deaths}" +
-                        $" - {gameState.Player.MatchStats.MVPs} MVPs";
-
-            var detail = $"Score: T {gameState.Map.TeamT.Score} - {gameState.Map.TeamCT.Score} CT";
-
-            var activity = gameState.Player.Activity;
-            System.Diagnostics.Debug.WriteLine(activity);
+            var (detail, state) = Preferences.FillFieldsByFunction(ValueForField);
 
             var info = new PresenceInfo(state, detail)
             {
@@ -75,15 +107,18 @@ namespace Disintegrate.Providers
                 LargeImageText = "Counter-Strike: Global Offensive"
             };
 
-            if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.T)
+            if (Preferences.Icon == "Team")
             {
-                info.SmallImageKey = "t";
-                info.SmallImageText = "Terrorists";
-            }
-            else if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.CT)
-            {
-                info.SmallImageKey = "ct";
-                info.SmallImageText = "Counter-Terrorists";
+                if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.T)
+                {
+                    info.SmallImageKey = "t";
+                    info.SmallImageText = "Terrorists";
+                }
+                else if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.CT)
+                {
+                    info.SmallImageKey = "ct";
+                    info.SmallImageText = "Counter-Terrorists";
+                }
             }
 
             PushState(info);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Disintegrate.Customization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,6 +16,11 @@ namespace Disintegrate
     /// </summary>
     public static class PresenceManager
     {
+        /// <summary>
+        /// A function called to laod <see cref="Preferences"/> for providers.
+        /// </summary>
+        public static Func<PresenceProvider, Preferences> PreferenceLoader { get; set; }
+
         private static Thread _watcher;
         private static (int pid, PresenceRelay relay)? _active = null;
 
@@ -23,9 +29,20 @@ namespace Disintegrate
         /// </summary>
         public static Dictionary<string, Type> Providers { get; } = new Dictionary<string, Type>();
 
+        /// <summary>
+        /// Instantiates a throwaway version of a <see cref="PresenceProvider"/> from a <see cref="Type"/>,
+        /// allowing details such as app ID or configurator to be checked. Do NOT invoke
+        /// <see cref="PresenceProvider.Start"/> from providers instantiated like this.
+        /// </summary>
+        public static PresenceProvider MakeQuickProvider(Type providerType) =>
+            (PresenceProvider)Activator.CreateInstance(providerType, new object[] { null });
+
+        /// <summary>
+        /// All configurators available in all indexed providers.
+        /// </summary>
         public static List<Configuration.Configurator> Configurators =>
             Providers
-                .Select(p => (PresenceProvider)Activator.CreateInstance(p.Value)) // Instantiate the providers
+                .Select(p => MakeQuickProvider(p.Value)) // Instantiate the providers
                 .Select(i => i.Configurator)
                 .ToList(); // Get the configurators
 
@@ -33,7 +50,7 @@ namespace Disintegrate
         /// See <see cref="Index(Type)"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static void Index<T>() where T : PresenceProvider, new() =>
+        public static void Index<T>() where T : PresenceProvider =>
             Index(typeof(T));
 
         /// <summary>
@@ -43,7 +60,7 @@ namespace Disintegrate
         /// <param name="t">The provider.</param>
         public static void Index(Type t)
         {
-            var instance = (PresenceProvider)Activator.CreateInstance(t);
+            var instance = MakeQuickProvider(t);
             var processName = instance.ProcessName;
 
             if (Providers.ContainsKey(processName))
@@ -105,7 +122,10 @@ namespace Disintegrate
                     // If the provider has its sought process name, start the provider
                     if (kv.Key == process.ProcessName)
                     {
-                        var newProvider = (PresenceProvider)Activator.CreateInstance(kv.Value);
+                        var quickProvider = MakeQuickProvider(kv.Value);
+
+                        var newProvider = (PresenceProvider)Activator.CreateInstance(kv.Value,
+                            new object[] { PreferenceLoader(quickProvider) ?? quickProvider.Customizer.Default });
 
                         var newRelay = new PresenceRelay(newProvider);
                         newRelay.Start();

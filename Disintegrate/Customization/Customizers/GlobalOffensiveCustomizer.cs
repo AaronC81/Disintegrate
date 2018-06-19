@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Disintegrate.Customization.Customizers
 {
-    public class Dota2Customizer : Customizer
+    public class GlobalOffensiveCustomizer : Customizer
     {
         private static List<string> _icons = new List<string>
         {
@@ -21,23 +21,20 @@ namespace Disintegrate.Customization.Customizers
             new TextField("Kills", "12"),
             new TextField("Deaths", "5"),
             new TextField("Assists", "20"),
-            new TextField("Denies", "32"),
-            new TextField("LastHits", "173"),
-            new TextField("Team", "Radiant"),
-            new TextField("Hero", "Keeper of the Light"),
-            new TextField("Level", "25"),
-            new TextField("Gold", "1,435")
+            new TextField("Team", "Counter-Terrorists"),
+            new TextField("MVPs", "3"),
+            new TextField("Score", "CT 11 - 4 T") // TODO: nyi
         };
 
-        public Dota2Customizer() : base(_icons, _checkboxes, _textFields)
+        public GlobalOffensiveCustomizer() : base(_icons, _checkboxes, _textFields)
         {
             Default = new Preferences
             {
                 CheckedCheckboxes = new List<string>(),
                 Customizer = this,
                 Icon = "Team",
-                LineOne = "{Hero} - Level {Level}",
-                LineTwo = "{Kills}/{Deaths}/{Assists} - {Gold} gold"
+                LineOne = "{Score}",
+                LineTwo = "{Kills}/{Assists}/{Deaths} - {MVPs} MVPs"
             };
         }
     }

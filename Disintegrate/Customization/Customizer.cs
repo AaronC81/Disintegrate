@@ -32,5 +32,10 @@ namespace Disintegrate.Customization
         /// The text fields available for the presence.
         /// </summary>
         public List<TextField> TextFields { get; }
+
+        /// <summary>
+        /// The default preferences.
+        /// </summary>
+        public Preferences Default { get; set; }
     }
 }

@@ -14,8 +14,8 @@ namespace Disintegrate.Customization
         /// <summary>
         /// The customizer which these preferences are associated with.
         /// </summary>
-        public Customizer Customizer { get; }
-        
+        public Customizer Customizer { get; set; }
+
         /// <summary>
         /// The chosen icon.
         /// </summary>
@@ -32,10 +32,13 @@ namespace Disintegrate.Customization
         public string LineTwo { get; set; }
 
         /// <summary>
-        /// Parses 
+        /// A list of all checked checkboxes.
         /// </summary>
-        /// <param name="line"></param>
-        /// <returns></returns>
+        public List<string> CheckedCheckboxes { get; set; }
+
+        /// <summary>
+        /// Parses one line.
+        /// </summary>
         public static IEnumerable<LinePart> ParseLine(string line)
         {
             // Add a null character to signal the end of the input
@@ -179,6 +182,35 @@ namespace Disintegrate.Customization
                 string.Join("", ParseLine(LineOne).Select(Fill)),
                 string.Join("", ParseLine(LineTwo).Select(Fill))
             );
+        }
+
+        /// <summary>
+        /// Converts this to a text representation.
+        /// </summary>
+        public string Serialize() => $@"1
+{LineOne}
+{LineTwo}
+{Icon}
+{string.Join(",", CheckedCheckboxes)}";
+
+        /// <summary>
+        /// Builds an instance from a textual representation created by <see cref="Serialize"/>.
+        /// </summary>
+        public static Preferences Deserialize(string data)
+        {
+            var lines = data.Replace("\r", "").Split('\n');
+            switch (lines[0]) // Version
+            {
+                case "1":
+                    var instance = new Preferences();
+                    instance.LineOne = lines[1];
+                    instance.LineTwo = lines[2];
+                    instance.Icon = lines[3];
+                    instance.CheckedCheckboxes = lines[4].Split(',').ToList();
+                    return instance;
+                default:
+                    throw new Exception("Unknown serialization version");
+            }
         }
     }
 }

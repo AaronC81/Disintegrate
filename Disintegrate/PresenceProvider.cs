@@ -30,6 +30,11 @@ namespace Disintegrate
         public abstract Configuration.Configurator Configurator { get; }
 
         /// <summary>
+        /// The customizer associated with this provider.
+        /// </summary>
+        public abstract Customization.Customizer Customizer { get; }
+
+        /// <summary>
         /// The frequency at which states are emitted via <see cref="StateReady"/>.
         /// </summary>
         public abstract StateFrequency StateFrequency { get; }
