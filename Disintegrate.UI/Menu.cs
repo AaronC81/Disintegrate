@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Disintegrate.Configuration.Configurators;
 using Disintegrate.Configuration;
+using System.Reflection;
 
 namespace Disintegrate.UI
 {
@@ -32,7 +33,8 @@ namespace Disintegrate.UI
 
         private void Menu_Load(object sender, EventArgs _)
         {
-            versionLabel.Text = $"Version {Info.Version}";
+            var version = Assembly.GetEntryAssembly().GetName().Version;
+            versionLabel.Text = $"Version {version}";
 
             foreach (var configurator in _configurators)
             {

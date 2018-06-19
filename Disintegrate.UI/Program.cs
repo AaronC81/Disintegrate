@@ -17,16 +17,6 @@ namespace Disintegrate.UI
         [STAThread]
         static void Main(string[] args)
         {
-            if (args.Contains("installer"))
-            {
-                // This has just been installed
-                // Running it normally would 'block' the installer
-                // Instead, relaunch this as a background process
-                Process.Start(Application.ExecutablePath, "show");
-
-                return;
-            }
-
             PresenceManager.Index<Providers.Dota2PresenceProvider>();
             PresenceManager.Index<Providers.GlobalOffensivePresenceProvider>();
             PresenceManager.Start();
