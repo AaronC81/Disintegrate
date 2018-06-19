@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Timers;
+using Disintegrate.Configuration;
 using Dota2GSI;
 
 namespace Disintegrate.Providers
@@ -15,6 +16,7 @@ namespace Disintegrate.Providers
         public override string ProcessName => "dota2";
         public override string AppId => "457208839205289984";
         public override StateFrequency StateFrequency => StateFrequency.FastAsPossible;
+        public override Configurator Configurator => new Configuration.Configurators.Dota2Configurator();
 
         private GameStateListener _gameStateListener;
 

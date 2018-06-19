@@ -25,6 +25,11 @@ namespace Disintegrate
         public abstract string AppId { get; }
 
         /// <summary>
+        /// The configurator associated with this provider.
+        /// </summary>
+        public abstract Configuration.Configurator Configurator { get; }
+
+        /// <summary>
         /// The frequency at which states are emitted via <see cref="StateReady"/>.
         /// </summary>
         public abstract StateFrequency StateFrequency { get; }

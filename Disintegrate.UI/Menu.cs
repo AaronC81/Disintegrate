@@ -15,14 +15,9 @@ namespace Disintegrate.UI
 {
     public partial class Menu : Form
     {
-        private List<Configurator> _configurators = new List<Configurator>();
-
         public Menu()
         {
             InitializeComponent();
-
-            _configurators.Add(new Dota2Configurator());
-            _configurators.Add(new GlobalOffensiveConfigurator());
         }
 
         private void ReloadGames()
@@ -36,7 +31,7 @@ namespace Disintegrate.UI
             var version = Assembly.GetEntryAssembly().GetName().Version;
             versionLabel.Text = $"Version {version}";
 
-            foreach (var configurator in _configurators)
+            foreach (var configurator in PresenceManager.Configurators)
             {
                 var gameEntry = new GameEntry(configurator);
                 gameEntry.ConfigureButton.Click += (s, e) =>

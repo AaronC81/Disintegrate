@@ -21,9 +21,22 @@ namespace Disintegrate.UI
         {
             try
             {
-                using (var mgr = UpdateManager.GitHubUpdateManager(@"https://github.com/OrangeFlash81/Disintegrate"))
+                using (var mgrTask = UpdateManager.GitHubUpdateManager(@"https://github.com/OrangeFlash81/Disintegrate"))
                 {
-                    await mgr.Result.UpdateApp();
+                    var mgr = mgrTask.Result;
+
+                    SquirrelAwareApp.HandleEvents(
+                        onInitialInstall: v =>
+                        {
+                            mgr.CreateShortcutsForExecutable("Disintegrate.UI.exe", ShortcutLocation.Startup, false);
+                        },
+                        onAppUpdate: v =>
+                        {
+                            mgr.CreateShortcutsForExecutable("Disintegrate.UI.exe", ShortcutLocation.Startup, true);
+                        }
+                    );
+
+                    await mgr.UpdateApp();
                 }
 
                 PresenceManager.Index<Providers.Dota2PresenceProvider>();

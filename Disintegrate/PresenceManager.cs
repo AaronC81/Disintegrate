@@ -23,6 +23,12 @@ namespace Disintegrate
         /// </summary>
         public static Dictionary<string, Type> Providers { get; } = new Dictionary<string, Type>();
 
+        public static List<Configuration.Configurator> Configurators =>
+            Providers
+                .Select(p => (PresenceProvider)Activator.CreateInstance(p.Value)) // Instantiate the providers
+                .Select(i => i.Configurator)
+                .ToList(); // Get the configurators
+
         /// <summary>
         /// See <see cref="Index(Type)"/>.
         /// </summary>

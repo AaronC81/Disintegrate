@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 using CSGSI;
+using Disintegrate.Configuration;
 
 namespace Disintegrate.Providers
 {
@@ -16,6 +17,7 @@ namespace Disintegrate.Providers
         public override string ProcessName => "csgo";
         public override string AppId => "457492341318746113";
         public override StateFrequency StateFrequency => StateFrequency.FastAsPossible;
+        public override Configurator Configurator => new Configuration.Configurators.GlobalOffensiveConfigurator();
 
         private GameStateListener _gameStateListener;
 
