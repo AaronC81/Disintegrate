@@ -83,6 +83,10 @@
     <Compile Include="Configuration\Configurators\Dota2Configurator.cs" />
     <Compile Include="Configuration\Configurators\GlobalOffensiveConfigurator.cs" />
     <Compile Include="Configuration\SteamLocator.cs" />
+    <Compile Include="Customization\Customizer.cs" />
+    <Compile Include="Customization\LinePart.cs" />
+    <Compile Include="Customization\Preferences.cs" />
+    <Compile Include="Customization\TextField.cs" />
     <Compile Include="DiscordRpc.cs" />
     <Compile Include="PresenceManager.cs" />
     <Compile Include="Providers\Dota2PresenceProvider.cs" />
