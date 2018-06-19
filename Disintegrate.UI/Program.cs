@@ -21,9 +21,9 @@ namespace Disintegrate.UI
         {
             try
             {
-                using (var mgr = new UpdateManager(@"http://disint.cc/"))
+                using (var mgr = UpdateManager.GitHubUpdateManager(@"https://github.com/OrangeFlash81/Disintegrate"))
                 {
-                    await mgr.UpdateApp();
+                    await mgr.Result.UpdateApp();
                 }
 
                 PresenceManager.Index<Providers.Dota2PresenceProvider>();
