@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Squirrel;
 
 namespace Disintegrate.UI
 {
@@ -15,16 +17,33 @@ namespace Disintegrate.UI
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            PresenceManager.Index<Providers.Dota2PresenceProvider>();
-            PresenceManager.Index<Providers.GlobalOffensivePresenceProvider>();
-            PresenceManager.Start();
+            try
+            {
+                using (var mgr = new UpdateManager(@"http://disint.cc/"))
+                {
+                    await mgr.UpdateApp();
+                }
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+                PresenceManager.Index<Providers.Dota2PresenceProvider>();
+                PresenceManager.Index<Providers.GlobalOffensivePresenceProvider>();
+                PresenceManager.Start();
 
-            Application.Run(new TrayIconContext(args.Contains("show")));
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
+                Application.Run(new TrayIconContext(args.Contains("show")));
+            }
+            catch (Exception e)
+            {
+#if DEBUG
+                throw;
+#else
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/disintegrate-crash.log";
+                File.WriteAllText(path, e.Message + "\n" + e.StackTrace);
+#endif
+            }
         }
     }
 }
