@@ -39,7 +39,9 @@ namespace Disintegrate.Customization
 
         public static void SavePreferences(PresenceApp app, Preferences newPrefs)
         {
-            var path = $"{Path.GetDirectoryName(Application.ExecutablePath)}\\preferences\\{MakeValidFileName(app.AppName)}";
+            var prefPath = $"{Path.GetDirectoryName(Application.ExecutablePath)}\\preferences";
+            Directory.CreateDirectory(prefPath);
+            var path = $"{prefPath}\\{MakeValidFileName(app.AppName)}";
             File.WriteAllText(path, newPrefs.Serialize());
         }
     }
