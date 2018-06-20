@@ -69,6 +69,7 @@ namespace Disintegrate.Providers
             newState.FieldValues["Deaths"] = gameState.Player.MatchStats.Deaths.ToString();
             newState.FieldValues["Assists"] = gameState.Player.MatchStats.Assists.ToString();
             newState.FieldValues["MVPs"] = gameState.Player.MatchStats.MVPs.ToString();
+            newState.FieldValues["Map"] = gameState.Map.Name;
 
             // The Team and Score fields depend on your team
             switch (gameState.Player.Team)

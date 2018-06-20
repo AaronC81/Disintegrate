@@ -23,7 +23,8 @@ namespace Disintegrate.Customization.Customizers
             new TextField("Assists", "20"),
             new TextField("Team", "Counter-Terrorists"),
             new TextField("MVPs", "3"),
-            new TextField("Score", "CT 11 - 4 T") // TODO: nyi
+            new TextField("Score", "CT 11 - 4 T"),
+            new TextField("Map", "de_mirage")
         };
 
         public GlobalOffensiveCustomizer() : base(_icons, _checkboxes, _textFields)
