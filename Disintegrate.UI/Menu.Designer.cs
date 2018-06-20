@@ -54,13 +54,13 @@
             this.gameTableLayout.Name = "gameTableLayout";
             this.gameTableLayout.RowCount = 1;
             this.gameTableLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.gameTableLayout.Size = new System.Drawing.Size(259, 164);
+            this.gameTableLayout.Size = new System.Drawing.Size(259, 281);
             this.gameTableLayout.TabIndex = 3;
             // 
             // versionLabel
             // 
             this.versionLabel.AutoSize = true;
-            this.versionLabel.Location = new System.Drawing.Point(13, 240);
+            this.versionLabel.Location = new System.Drawing.Point(13, 353);
             this.versionLabel.Name = "versionLabel";
             this.versionLabel.Size = new System.Drawing.Size(66, 13);
             this.versionLabel.TabIndex = 4;
@@ -69,7 +69,7 @@
             // websiteLink
             // 
             this.websiteLink.AutoSize = true;
-            this.websiteLink.Location = new System.Drawing.Point(226, 239);
+            this.websiteLink.Location = new System.Drawing.Point(226, 353);
             this.websiteLink.Name = "websiteLink";
             this.websiteLink.Size = new System.Drawing.Size(46, 13);
             this.websiteLink.TabIndex = 5;
@@ -81,7 +81,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 261);
+            this.ClientSize = new System.Drawing.Size(284, 377);
             this.Controls.Add(this.websiteLink);
             this.Controls.Add(this.versionLabel);
             this.Controls.Add(this.gameTableLayout);

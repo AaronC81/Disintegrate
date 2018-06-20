@@ -27,6 +27,7 @@ namespace Disintegrate
         public abstract string AppName { get; }
         public abstract string AppId { get; }
         public abstract string ProcessName { get; }
+        public virtual bool WorkInProgress => false;
 
         public abstract Customizer Customizer { get; }
 

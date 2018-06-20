@@ -30,7 +30,6 @@ namespace Disintegrate.Configuration.Configurators
     }
 }
 ";
-        public override string AppName => "CS:GO";
 
         public override List<string> Configure()
         {

@@ -21,10 +21,5 @@ namespace Disintegrate.Configuration
         /// altered files.
         /// </summary>
         public abstract List<string> Configure();
-
-        /// <summary>
-        /// The recognizable name of the app which the user is configuring.
-        /// </summary>
-        public abstract string AppName { get; }
     }
 }

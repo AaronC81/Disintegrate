@@ -38,16 +38,15 @@ namespace Disintegrate.UI
             {
                 var app = kv.Value;
 
-                var configurator = app.Configurator;
-                var gameEntry = new GameEntry(configurator);
+                var gameEntry = new GameEntry(app);
                 gameEntry.ConfigureButton.Click += (s, e) =>
                 {
-                    Configure(configurator);
+                    Configure(app.Configurator);
                     ReloadGames();
                 };
                 gameEntry.CustomizeButton.Click += (s, e) =>
                 {
-                    var editor = new PreferencesEditor(app, app.CachedPreferences ?? app.Customizer.Default.DeepClone());
+                    var editor = new PreferencesEditor(app, app.CachedPreferences);
                     editor.ShowDialog();
                     Menu_Load(sender, _);
                 };
@@ -62,23 +61,21 @@ namespace Disintegrate.UI
 
         private void Configure(Configurator configurator)
         {
-            var name = configurator.AppName;
-
-            if (MessageBox.Show($@"This will alter game files for {name}.
+            if (MessageBox.Show($@"This will alter game files.
 If something goes wrong you may have to reinstall the game.
 Continue?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
                     var changedFiles = configurator.Configure();
-                    MessageBox.Show($@"Successfully configured {name}.
+                    MessageBox.Show($@"Successfully configured.
 These files changed:
 {string.Join("\n", changedFiles)}");
                 }
                 catch
                 {
                     // TODO: More detail/crash log
-                    MessageBox.Show("Something went wrong while configuring {name}.");
+                    MessageBox.Show("Something went wrong while configuring.");
                 }
             }
         }

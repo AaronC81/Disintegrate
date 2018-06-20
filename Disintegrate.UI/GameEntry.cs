@@ -17,9 +17,12 @@ namespace Disintegrate.UI
             InitializeComponent();
         }
 
-        public GameEntry(Configuration.Configurator configurator) : this()
+        private PresenceApp _app;
+
+        public GameEntry(PresenceApp app) : this()
         {
-            Configurator = configurator;
+            _app = app;
+            Configurator = app.Configurator;
         }
 
         private Configuration.Configurator _configurator;
@@ -30,7 +33,7 @@ namespace Disintegrate.UI
             {
                 _configurator = value;
 
-                gameNameLabel.Text = _configurator.AppName;
+                gameNameLabel.Text = _app.AppName;
 
                 if (_configurator.IsConfigured())
                 {
@@ -47,5 +50,12 @@ namespace Disintegrate.UI
 
         public Button ConfigureButton => configureButton;
         public Button CustomizeButton => customizeButton;
+
+        private void GameEntry_Load(object sender, EventArgs e)
+        {
+            wipLabel.Text = _app.WorkInProgress
+                ? "Work in progress"
+                : "";
+        }
     }
 }

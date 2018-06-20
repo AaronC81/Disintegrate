@@ -42,6 +42,7 @@ namespace Disintegrate.UI
 
                 PresenceManager.Index(new Apps.Dota2App());
                 PresenceManager.Index(new Apps.GlobalOffensiveApp());
+                PresenceManager.Index(new Apps.HearthstoneApp());
                 PresenceManager.Start();
 
                 Application.EnableVisualStyles();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Force.DeepCloner;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace Disintegrate.Customization
             }
             else
             {
-                return null;
+                return app.Customizer.Default.DeepClone();
             }
         }
 

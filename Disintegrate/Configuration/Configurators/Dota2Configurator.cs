@@ -28,7 +28,6 @@ namespace Disintegrate.Configuration.Configurators
         ""items""         ""1""
     }
 }";
-        public override string AppName => "DOTA 2";
 
         public override List<string> Configure()
         {

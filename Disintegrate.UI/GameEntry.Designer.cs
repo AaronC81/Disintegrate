@@ -31,6 +31,7 @@
             this.gameNameLabel = new System.Windows.Forms.Label();
             this.configureButton = new System.Windows.Forms.Button();
             this.customizeButton = new System.Windows.Forms.Button();
+            this.wipLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // gameNameLabel
@@ -66,15 +67,27 @@
             this.customizeButton.Text = "Customize";
             this.customizeButton.UseVisualStyleBackColor = true;
             // 
+            // wipLabel
+            // 
+            this.wipLabel.AutoSize = true;
+            this.wipLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.wipLabel.Location = new System.Drawing.Point(4, 50);
+            this.wipLabel.Name = "wipLabel";
+            this.wipLabel.Size = new System.Drawing.Size(41, 13);
+            this.wipLabel.TabIndex = 3;
+            this.wipLabel.Text = "label1";
+            // 
             // GameEntry
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.wipLabel);
             this.Controls.Add(this.customizeButton);
             this.Controls.Add(this.configureButton);
             this.Controls.Add(this.gameNameLabel);
             this.Name = "GameEntry";
             this.Size = new System.Drawing.Size(244, 73);
+            this.Load += new System.EventHandler(this.GameEntry_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -85,5 +98,6 @@
         private System.Windows.Forms.Label gameNameLabel;
         private System.Windows.Forms.Button configureButton;
         private System.Windows.Forms.Button customizeButton;
+        private System.Windows.Forms.Label wipLabel;
     }
 }
