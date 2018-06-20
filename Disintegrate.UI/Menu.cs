@@ -11,6 +11,7 @@ using Disintegrate.Configuration.Configurators;
 using Disintegrate.Configuration;
 using System.Reflection;
 using Force.DeepCloner;
+using System.IO;
 
 namespace Disintegrate.UI
 {
@@ -72,10 +73,11 @@ Continue?", "", MessageBoxButtons.YesNo) == DialogResult.Yes)
 These files changed:
 {string.Join("\n", changedFiles)}");
                 }
-                catch
+                catch (Exception e)
                 {
-                    // TODO: More detail/crash log
-                    MessageBox.Show("Something went wrong while configuring.");
+                    MessageBox.Show("Something went wrong while configuring. A log has been written to your desktop.");
+                    var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/config-crash.log";
+                    File.WriteAllText(path, e.Message + "\n" + e.StackTrace);
                 }
             }
         }
