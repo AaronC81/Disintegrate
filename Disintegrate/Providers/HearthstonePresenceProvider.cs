@@ -23,7 +23,6 @@ namespace Disintegrate.Providers
 
         public override void Start()
         {
-            // TODO: This feels bad, can definitely be improved
             var logPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Hearthstone\Logs\Power.log";
 
             _watcher = new Thread(() =>
