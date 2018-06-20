@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using Disintegrate.Configuration.Configurators;
 using Disintegrate.Configuration;
 using System.Reflection;
+using Force.DeepCloner;
 
 namespace Disintegrate.UI
 {
@@ -28,16 +29,27 @@ namespace Disintegrate.UI
 
         private void Menu_Load(object sender, EventArgs _)
         {
+            gameTableLayout.Controls.Clear();
+
             var version = Assembly.GetEntryAssembly().GetName().Version;
             versionLabel.Text = $"Version {version}";
 
-            foreach (var configurator in PresenceManager.Configurators)
+            foreach (var kv in PresenceManager.Apps)
             {
+                var app = kv.Value;
+
+                var configurator = app.Configurator;
                 var gameEntry = new GameEntry(configurator);
                 gameEntry.ConfigureButton.Click += (s, e) =>
                 {
                     Configure(configurator);
                     ReloadGames();
+                };
+                gameEntry.CustomizeButton.Click += (s, e) =>
+                {
+                    var editor = new PreferencesEditor(app, app.CachedPreferences ?? app.Customizer.Default.DeepClone());
+                    editor.ShowDialog();
+                    Menu_Load(sender, _);
                 };
                 gameTableLayout.Controls.Add(gameEntry);
             }

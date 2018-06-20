@@ -23,15 +23,13 @@ namespace Disintegrate.Customization
             return original;
         }
 
-        public static Preferences LoadPreferences(PresenceProvider provider)
-        {
-            var appName = provider.Configurator.AppName;
-
-            var path = $"{Path.GetDirectoryName(Application.ExecutablePath)}\\preferences\\{MakeValidFileName(appName)}";
+        public static Preferences LoadPreferences(PresenceApp app)
+        { 
+            var path = $"{Path.GetDirectoryName(Application.ExecutablePath)}\\preferences\\{MakeValidFileName(app.AppName)}";
             if (File.Exists(path))
             {
                 var data = File.ReadAllText(path);
-                return Preferences.Deserialize(data);
+                return Preferences.Deserialize(data, app.Customizer);
             }
             else
             {
@@ -39,12 +37,10 @@ namespace Disintegrate.Customization
             }
         }
 
-        public static void SavePreferences(PresenceProvider provider, Preferences prefs)
+        public static void SavePreferences(PresenceApp app, Preferences newPrefs)
         {
-            var appName = provider.Configurator.AppName;
-
-            var path = $"{Application.ExecutablePath}\\preferences\\{MakeValidFileName(appName)}";
-            File.WriteAllText(path, prefs.Serialize());
+            var path = $"{Path.GetDirectoryName(Application.ExecutablePath)}\\preferences\\{MakeValidFileName(app.AppName)}";
+            File.WriteAllText(path, newPrefs.Serialize());
         }
     }
 }

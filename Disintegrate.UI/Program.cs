@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Squirrel;
+using Force.DeepCloner;
 
 namespace Disintegrate.UI
 {
@@ -39,13 +40,24 @@ namespace Disintegrate.UI
 
                 PresenceManager.PreferenceLoader = Customization.Loader.LoadPreferences;
 
-                PresenceManager.Index<Providers.Dota2PresenceProvider>();
-                PresenceManager.Index<Providers.GlobalOffensivePresenceProvider>();
+                PresenceManager.Index(new Apps.Dota2App());
+                PresenceManager.Index(new Apps.GlobalOffensiveApp());
                 PresenceManager.Start();
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-
+                /*
+                var prefs = new Customization.Preferences
+                {
+                    CheckedCheckboxes = new List<string>(),
+                    Customizer = new Customization.Customizers.Dota2Customizer(),
+                    Icon = "Team",
+                    LineOne = "Line one",
+                    LineTwo = "Line two"
+                };
+                var provider = new Providers.Dota2PresenceProvider(prefs);
+                Application.Run(new PreferencesEditor(provider, prefs));
+                */
                 Application.Run(new TrayIconContext(args.Contains("show")));
             }
             catch (Exception e)

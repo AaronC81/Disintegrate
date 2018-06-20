@@ -14,20 +14,11 @@ namespace Disintegrate.Providers
     /// </summary>
     public class Dota2PresenceProvider : PresenceProvider
     {
-        public Dota2PresenceProvider(Preferences preferences)
-        {
-            Preferences = preferences;
-        }
+        public Dota2PresenceProvider(PresenceApp app) : base(app) { }
 
-        public override string ProcessName => "dota2";
-        public override string AppId => "457208839205289984";
         public override StateFrequency StateFrequency => StateFrequency.FastAsPossible;
-        public override Configurator Configurator => new Configuration.Configurators.Dota2Configurator();
-        public override Customizer Customizer => new Customization.Customizers.Dota2Customizer();
 
         private GameStateListener _gameStateListener;
-
-        public Preferences Preferences { get; }
 
         const int NoStateSeconds = 5;
         private Timer _noStateTimer;
@@ -52,69 +43,44 @@ namespace Disintegrate.Providers
         /// <param name="gameState">The new game state.</param>
         public void NewGameState(GameState gameState)
         {
-            string state, detail;
+            var newState = new PresenceState();
 
-            /// <summary>
-            /// Gets the value for a field with a given name.
-            /// </summary>
-            /// <returns></returns>
-            string ValueForField(string fieldName)
-            {
-                switch (fieldName)
-                {
-                    case "Kills":
-                        return gameState.Player.Kills.ToString();
-                    case "Deaths":
-                        return gameState.Player.Deaths.ToString();
-                    case "Assists":
-                        return gameState.Player.Assists.ToString();
-                    case "Denies":
-                        return gameState.Player.Denies.ToString();
-                    case "LastHits":
-                        return gameState.Player.LastHits.ToString();
-                    case "Team":
-                        return gameState.Player.Team.ToString();
-                    case "Hero":
-                        return Utilities.Dota2HeroNaming.MakeFriendlyName(gameState.Hero.Name);
-                    case "Level":
-                        return gameState.Hero.Level.ToString();
-                    case "Gold":
-                        return gameState.Player.Gold.ToString("N0");
-                    default:
-                        return "ERROR";
-                }
-            }
+            newState.ImageValue = new ImageBundle("logo", "DOTA 2");
 
+            newState.FieldValues["Kills"] = gameState.Player.Kills.ToString();
+            newState.FieldValues["Deaths"] = gameState.Player.Deaths.ToString();
+            newState.FieldValues["Assists"] = gameState.Player.Assists.ToString();
+            newState.FieldValues["Denies"] = gameState.Player.Denies.ToString();
+            newState.FieldValues["LastHits"] = gameState.Player.LastHits.ToString();
+            newState.FieldValues["Team"] = gameState.Player.Team.ToString();
+            newState.FieldValues["Hero"] = Utilities.Dota2HeroNaming.MakeFriendlyName(gameState.Hero.Name);
+            newState.FieldValues["Level"] = gameState.Hero.Level.ToString();
+            newState.FieldValues["Gold"] = gameState.Player.Gold.ToString("N0");
+
+            // If we're in a game but haven't picked yet
             if (gameState.Hero.Level == -1)
             {
-                (detail, state) = ("Picking a hero", "");
+                newState.OverrideText = ("Picking a hero", "");
+            }
+
+            // If they want no icon, create a blank icon
+            newState.IconValues["None"] = new ImageBundle("", "");
+
+            // If they want a team icon, find out which team they're on
+            if (gameState.Player.Team == Dota2GSI.Nodes.PlayerTeam.Dire)
+            {
+                newState.IconValues["Team"] = new ImageBundle("dire", "Dire");
+            }
+            else if (gameState.Player.Team == Dota2GSI.Nodes.PlayerTeam.Radiant)
+            {
+                newState.IconValues["Team"] = new ImageBundle("radiant", "Radiant");
             }
             else
             {
-                (detail, state) = Preferences.FillFieldsByFunction(ValueForField);
+                newState.IconValues["Team"] = new ImageBundle("", "");
             }
 
-            var info = new PresenceInfo(state, detail)
-            {
-                LargeImageKey = "logo",
-                LargeImageText = "DOTA 2",
-            };
-
-            if (Preferences.Icon == "Team")
-            {
-                if (gameState.Player.Team == Dota2GSI.Nodes.PlayerTeam.Dire)
-                {
-                    info.SmallImageKey = "dire";
-                    info.SmallImageText = "Dire";
-                }
-                else if (gameState.Player.Team == Dota2GSI.Nodes.PlayerTeam.Radiant)
-                {
-                    info.SmallImageKey = "radiant";
-                    info.SmallImageText = "Radiant";
-                }
-            }
-
-            PushState(info);
+            PushState(newState);
             _noStateTimer.Stop();
             _noStateTimer.Start();
         }
@@ -125,10 +91,9 @@ namespace Disintegrate.Providers
         /// </summary>
         public void NoGameState(object o, ElapsedEventArgs e)
         {
-            PushState(new PresenceInfo("In menus", "")
+            PushState(new PresenceState("In menus", "")
             {
-                LargeImageKey = "logo",
-                LargeImageText = "DOTA 2",
+                ImageValue = new ImageBundle("logo", "DOTA 2")
             });
         }
 

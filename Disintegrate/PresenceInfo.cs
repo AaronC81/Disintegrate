@@ -11,6 +11,8 @@ namespace Disintegrate
     /// </summary>
     public class PresenceInfo
     {
+        public PresenceInfo() { }
+
         public PresenceInfo(string state, string detail)
         {
             State = state;

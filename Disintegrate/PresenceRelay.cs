@@ -34,7 +34,7 @@ namespace Disintegrate
             handlers.disconnectedCallback += (a, b) => { };
             handlers.errorCallback += (a, b) => { };
 
-            DiscordRpc.Initialize(Provider.AppId, ref handlers, true, null);
+            DiscordRpc.Initialize(Provider.App.AppId, ref handlers, true, null);
 
             if (Provider.StateFrequency == StateFrequency.TimeControlled)
             {
@@ -43,8 +43,7 @@ namespace Disintegrate
                 {
                     if (_stopped) return;
 
-                    var rpcPresence = p.ToRpc();
-                    DiscordRpc.UpdatePresence(ref rpcPresence);
+                    FormatAndUpdate(p);
                 };
             }
             else if (Provider.StateFrequency == StateFrequency.FastAsPossible)
@@ -61,14 +60,22 @@ namespace Disintegrate
                     // If it's been 3 seconds, send the new state
                     if (timeNow - lastPublishTime >= 3)
                     {
-                        var rpcPresence = p.ToRpc();
-                        DiscordRpc.UpdatePresence(ref rpcPresence);
+                        FormatAndUpdate(p);
                         lastPublishTime = timeNow;
                     }
                 };
             }
 
             Provider.Start();
+        }
+
+        public void FormatAndUpdate(PresenceState state)
+        {
+            var formatter = Provider.App.GetFormatter();
+
+            var info = formatter.StateToInfo(state);
+            var rpcPresence = info.ToRpc();
+            DiscordRpc.UpdatePresence(ref rpcPresence);
         }
 
         /// <summary>

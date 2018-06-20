@@ -46,5 +46,6 @@ namespace Disintegrate.UI
         }
 
         public Button ConfigureButton => configureButton;
+        public Button CustomizeButton => customizeButton;
     }
 }

@@ -2,47 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Disintegrate
 {
-    public delegate void StateReadyEventArgs(PresenceProvider sender, PresenceInfo presenceInfo);
+    public delegate void StateReadyEventArgs(PresenceProvider sender, PresenceState presenceInfo);
 
     /// <summary>
-    /// A base for classes which may provide Discord rich presence information while a particular program is running.
+    /// Gathers data for a presence to be passed to a <see cref="PresenceFormatter"/>.
     /// </summary>
     public abstract class PresenceProvider
     {
-        /// <summary>
-        /// The name of the process during which this provider is active. The ending '.exe' is not needed.
-        /// </summary>
-        public abstract string ProcessName { get; }
+        public PresenceProvider(PresenceApp app)
+        {
+            App = app;
+        }
+
+        public PresenceApp App { get; }
 
         /// <summary>
-        /// The app ID to use when sending states to the Discord RPC.
-        /// </summary>
-        public abstract string AppId { get; }
-
-        /// <summary>
-        /// The configurator associated with this provider.
-        /// </summary>
-        public abstract Configuration.Configurator Configurator { get; }
-
-        /// <summary>
-        /// The customizer associated with this provider.
-        /// </summary>
-        public abstract Customization.Customizer Customizer { get; }
-
-        /// <summary>
-        /// The frequency at which states are emitted via <see cref="StateReady"/>.
+        /// The frequency at which this provider will emit new states.
         /// </summary>
         public abstract StateFrequency StateFrequency { get; }
-
-        /// <summary>
-        /// An event fired whenever this has a new state available.
-        /// </summary>
-        public event StateReadyEventArgs StateReady;
 
         /// <summary>
         /// Start listening for game events, and begin emitting states.
@@ -55,9 +36,14 @@ namespace Disintegrate
         public abstract void Stop();
 
         /// <summary>
+        /// An event fired whenever this has a new state available.
+        /// </summary>
+        public event StateReadyEventArgs StateReady;
+
+        /// <summary>
         /// Emits a new state.
         /// </summary>
-        public void PushState(PresenceInfo presenceInfo) =>
-            StateReady?.Invoke(this, presenceInfo);
+        public void PushState(PresenceState presenceState) =>
+            StateReady?.Invoke(this, presenceState);
     }
 }

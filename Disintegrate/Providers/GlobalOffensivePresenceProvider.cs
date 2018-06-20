@@ -15,20 +15,11 @@ namespace Disintegrate.Providers
     /// </summary>
     public class GlobalOffensivePresenceProvider : PresenceProvider
     {
-        public GlobalOffensivePresenceProvider(Preferences preferences)
-        {
-            Preferences = preferences;
-        }
+        public GlobalOffensivePresenceProvider(PresenceApp app) : base(app) { }
 
-        public override string ProcessName => "csgo";
-        public override string AppId => "457492341318746113";
         public override StateFrequency StateFrequency => StateFrequency.FastAsPossible;
-        public override Configurator Configurator => new Configuration.Configurators.GlobalOffensiveConfigurator();
-        public override Customizer Customizer => new Customization.Customizers.GlobalOffensiveCustomizer();
 
         private GameStateListener _gameStateListener;
-
-        public Preferences Preferences { get; }
 
         const int NoStateSeconds = 5;
         private Timer _noStateTimer;
@@ -53,39 +44,14 @@ namespace Disintegrate.Providers
         /// <param name="gameState">The new game state.</param>
         public void NewGameState(GameState gameState)
         {
-            Console.WriteLine("STATE");
+            var newState = new PresenceState();
+
+            newState.ImageValue = new ImageBundle("logo", "CS:GO");
 
             // The game broadcasts a '-1' state when started
             if (gameState.Player.MatchStats.Deaths == -1)
             {
                 return;
-            }
-
-            string ValueForField(string fieldName)
-            {
-                switch (fieldName)
-                {
-                    case "Kills":
-                        return gameState.Player.MatchStats.Kills.ToString();
-                    case "Deaths":
-                        return gameState.Player.MatchStats.Deaths.ToString();
-                    case "Assists":
-                        return gameState.Player.MatchStats.Assists.ToString();
-                    case "Team":
-                        switch (gameState.Player.Team)
-                        {
-                            case CSGSI.Nodes.PlayerTeam.T:
-                                return "T";
-                            case CSGSI.Nodes.PlayerTeam.CT:
-                                return "CT";
-                            default:
-                                return "??";
-                        }
-                    case "MVPs":
-                        return gameState.Player.MatchStats.MVPs.ToString();
-                    default:
-                        return "ERROR";
-                }
             }
 
             // gameState.Player refers to the player we're watching, so if we're dead, 
@@ -99,30 +65,46 @@ namespace Disintegrate.Providers
                 return;
             }
 
-            var (detail, state) = Preferences.FillFieldsByFunction(ValueForField);
+            newState.FieldValues["Kills"] = gameState.Player.MatchStats.Kills.ToString();
+            newState.FieldValues["Deaths"] = gameState.Player.MatchStats.Deaths.ToString();
+            newState.FieldValues["Assists"] = gameState.Player.MatchStats.Assists.ToString();
+            newState.FieldValues["MVPs"] = gameState.Player.MatchStats.MVPs.ToString();
 
-            var info = new PresenceInfo(state, detail)
+            // The Team and Score fields depend on your team
+            switch (gameState.Player.Team)
             {
-                LargeImageKey = "logo",
-                LargeImageText = "Counter-Strike: Global Offensive"
-            };
-
-            if (Preferences.Icon == "Team")
-            {
-                if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.T)
-                {
-                    info.SmallImageKey = "t";
-                    info.SmallImageText = "Terrorists";
-                }
-                else if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.CT)
-                {
-                    info.SmallImageKey = "ct";
-                    info.SmallImageText = "Counter-Terrorists";
-                }
+                case CSGSI.Nodes.PlayerTeam.T:
+                    newState.FieldValues["Team"] = "Terrorists";
+                    newState.FieldValues["Score"] = $"T {gameState.Map.TeamT.Score} - {gameState.Map.TeamCT.Score} CT";
+                    break;
+                case CSGSI.Nodes.PlayerTeam.CT:
+                    newState.FieldValues["Team"] = "Counter-Terrorists";
+                    newState.FieldValues["Score"] = $"CT {gameState.Map.TeamCT.Score} - {gameState.Map.TeamT.Score} T";
+                    break;
+                default:
+                    newState.FieldValues["Team"] = "Unknown team";
+                    newState.FieldValues["Score"] = $"CT {gameState.Map.TeamCT.Score} - {gameState.Map.TeamT.Score} T";
+                    break;
             }
 
-            PushState(info);
+            // If they want no icon, create a blank icon
+            newState.IconValues["None"] = new ImageBundle("", "");
 
+            // If they want a team icon, find out which team they're on
+            if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.T)
+            {
+                newState.IconValues["Team"] = new ImageBundle("t", "Terrorists");
+            }
+            else if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.CT)
+            {
+                newState.IconValues["Team"] = new ImageBundle("ct", "Counter-Terrorists");
+            }
+            else
+            {
+                newState.IconValues["Team"] = new ImageBundle("", "");
+            }
+
+            PushState(newState);
             _noStateTimer.Stop();
             _noStateTimer.Start();
         }
@@ -133,13 +115,9 @@ namespace Disintegrate.Providers
         /// </summary>
         public void NoGameState(object o, ElapsedEventArgs e)
         {
-            var info = new PresenceInfo("In menus", "")
-            {
-                LargeImageKey = "logo",
-                LargeImageText = "Counter-Strike: Global Offensive"
-            };
-
-            PushState(info);
+            PushState(new PresenceState("In menus", "") {
+                ImageValue = new ImageBundle("logo", "CS:GO")
+            });
         }
 
         public override void Stop()

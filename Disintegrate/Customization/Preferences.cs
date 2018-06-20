@@ -174,7 +174,7 @@ namespace Disintegrate.Customization
             string Fill(LinePart part)
             {
                 return part.Kind == LinePart.PartKind.Field
-                    ? func(part.Value)
+                    ? (func(part.Value) ?? throw new Exception($"Unknown field {part.Value}"))
                     : part.Value;
             }
 
@@ -196,7 +196,7 @@ namespace Disintegrate.Customization
         /// <summary>
         /// Builds an instance from a textual representation created by <see cref="Serialize"/>.
         /// </summary>
-        public static Preferences Deserialize(string data)
+        public static Preferences Deserialize(string data, Customizer customizer)
         {
             var lines = data.Replace("\r", "").Split('\n');
             switch (lines[0]) // Version
@@ -207,6 +207,7 @@ namespace Disintegrate.Customization
                     instance.LineTwo = lines[2];
                     instance.Icon = lines[3];
                     instance.CheckedCheckboxes = lines[4].Split(',').ToList();
+                    instance.Customizer = customizer;
                     return instance;
                 default:
                     throw new Exception("Unknown serialization version");

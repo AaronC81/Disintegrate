@@ -19,7 +19,7 @@ namespace Disintegrate
         /// <summary>
         /// A function called to laod <see cref="Preferences"/> for providers.
         /// </summary>
-        public static Func<PresenceProvider, Preferences> PreferenceLoader { get; set; }
+        public static Func<PresenceApp, Preferences> PreferenceLoader { get; set; }
 
         private static Thread _watcher;
         private static (int pid, PresenceRelay relay)? _active = null;
@@ -27,47 +27,21 @@ namespace Disintegrate
         /// <summary>
         /// Maps process names to <see cref="PresenceProvider"/> types.
         /// </summary>
-        public static Dictionary<string, Type> Providers { get; } = new Dictionary<string, Type>();
+        public static Dictionary<string, PresenceApp> Apps { get; } = new Dictionary<string, PresenceApp>();
 
         /// <summary>
-        /// Instantiates a throwaway version of a <see cref="PresenceProvider"/> from a <see cref="Type"/>,
-        /// allowing details such as app ID or configurator to be checked. Do NOT invoke
-        /// <see cref="PresenceProvider.Start"/> from providers instantiated like this.
-        /// </summary>
-        public static PresenceProvider MakeQuickProvider(Type providerType) =>
-            (PresenceProvider)Activator.CreateInstance(providerType, new object[] { null });
-
-        /// <summary>
-        /// All configurators available in all indexed providers.
-        /// </summary>
-        public static List<Configuration.Configurator> Configurators =>
-            Providers
-                .Select(p => MakeQuickProvider(p.Value)) // Instantiate the providers
-                .Select(i => i.Configurator)
-                .ToList(); // Get the configurators
-
-        /// <summary>
-        /// See <see cref="Index(Type)"/>.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public static void Index<T>() where T : PresenceProvider =>
-            Index(typeof(T));
-
-        /// <summary>
-        /// Indexes a <see cref="PresenceProvider"/>, allowing it to be launched automatically along
+        /// Indexes a <see cref="PresenceApp"/>, allowing it to be launched automatically along
         /// with a process.
         /// </summary>
-        /// <param name="t">The provider.</param>
-        public static void Index(Type t)
+        public static void Index(PresenceApp app)
         {
-            var instance = MakeQuickProvider(t);
-            var processName = instance.ProcessName;
+            var processName = app.ProcessName;
 
-            if (Providers.ContainsKey(processName))
+            if (Apps.ContainsKey(processName))
             {
                 throw new Exception($"Already indexed a provider for {processName}");
             }
-            Providers[processName] = t;
+            Apps[processName] = app;
         }
 
         /// <summary>
@@ -100,7 +74,7 @@ namespace Disintegrate
             if (_active == null) return;
 
             var processNames = processes.Select(p => p.ProcessName);
-            var soughtName = _active.Value.relay.Provider.ProcessName;
+            var soughtName = _active.Value.relay.Provider.App.ProcessName;
 
             // If the name isn't found, stop the provider
             if (!processNames.Contains(soughtName))
@@ -115,17 +89,14 @@ namespace Disintegrate
             // If there's already a running provider, return
             if (_active != null) return;
 
-            foreach (var kv in Providers)
+            foreach (var kv in Apps)
             {
                 foreach (var process in processes)
                 {
                     // If the provider has its sought process name, start the provider
                     if (kv.Key == process.ProcessName)
                     {
-                        var quickProvider = MakeQuickProvider(kv.Value);
-
-                        var newProvider = (PresenceProvider)Activator.CreateInstance(kv.Value,
-                            new object[] { PreferenceLoader(quickProvider) ?? quickProvider.Customizer.Default });
+                        var newProvider = kv.Value.MakeProvider();
 
                         var newRelay = new PresenceRelay(newProvider);
                         newRelay.Start();

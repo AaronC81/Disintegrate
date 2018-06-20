@@ -1,4 +1,6 @@
-﻿# Disintegrate
+﻿# THIS IS NOW OUT-OF-DATE.
+
+# Disintegrate
 This project is the core of Disintegrate. It contains most of the logic which
 makes Disintegrate work, with UI tasks handled by `Disintegrate.UI` instead.
 
