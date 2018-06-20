@@ -46,18 +46,6 @@ namespace Disintegrate.UI
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                /*
-                var prefs = new Customization.Preferences
-                {
-                    CheckedCheckboxes = new List<string>(),
-                    Customizer = new Customization.Customizers.Dota2Customizer(),
-                    Icon = "Team",
-                    LineOne = "Line one",
-                    LineTwo = "Line two"
-                };
-                var provider = new Providers.Dota2PresenceProvider(prefs);
-                Application.Run(new PreferencesEditor(provider, prefs));
-                */
                 Application.Run(new TrayIconContext(args.Contains("show")));
             }
             catch (Exception e)
