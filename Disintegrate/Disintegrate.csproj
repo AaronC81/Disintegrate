@@ -112,6 +112,7 @@
     <Compile Include="Providers\HearthstonePresenceProvider.cs" />
     <Compile Include="Utilities\Dota2HeroNaming.cs" />
     <Compile Include="StateFrequency.cs" />
+    <Compile Include="Utilities\GlobalOffensiveNaming.cs" />
     <Compile Include="Utilities\HearthstoneNaming.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -70,6 +70,7 @@ namespace Disintegrate.Providers
             newState.FieldValues["Assists"] = gameState.Player.MatchStats.Assists.ToString();
             newState.FieldValues["MVPs"] = gameState.Player.MatchStats.MVPs.ToString();
             newState.FieldValues["Map"] = gameState.Map.Name;
+            newState.FieldValues["Mode"] = Utilities.GlobalOffensiveNaming.ModeNames[gameState.Map.Mode];
 
             // The Team and Score fields depend on your team
             switch (gameState.Player.Team)
