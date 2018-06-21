@@ -23,95 +23,104 @@ namespace Disintegrate.Providers
 
         public override void Start()
         {
-            var logPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Hearthstone\Logs\Power.log";
-
-            _watcher = new Thread(() =>
+            Safe(() =>
             {
-                while (true)
+                var logPath = $@"{Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86)}\Hearthstone\Logs\Power.log";
+
+                _watcher = new Thread(() =>
                 {
-                    string content;
-                    try
+                    while (true)
                     {
-                        // This complicated way of opening a file still works if it's locked
-                        using (var file = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                        string content;
+                        try
                         {
-                            using (var stream = new StreamReader(file))
+                            // This complicated way of opening a file still works if it's locked
+                            using (var file = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                             {
-                                content = stream.ReadToEnd();
+                                using (var stream = new StreamReader(file))
+                                {
+                                    content = stream.ReadToEnd();
+                                }
                             }
                         }
+                        catch
+                        {
+                            Console.WriteLine("Hearthstone log is locked");
+                            continue;
+                        }
+                        LogChanged(content);
+                        Thread.Sleep(5000);
                     }
-                    catch
-                    {
-                        Console.WriteLine("Hearthstone log is locked");
-                        continue;
-                    }
-                    LogChanged(content);
-                    Thread.Sleep(5000);   
-                }
-            });
+                });
 
-            _watcher.Start();
+                _watcher.Start();
+            });
         }
 
 
 
         public void LogChanged(string content)
         {
-            // This regex will match game information such as players and the type of game
-            var gameInfoRegex = new Regex(@"^.*GameState.DebugPrintGame\(\) - (.*)\=(.*)$");
-
-            // This regex will match a log line signalling that the game is over
-            var gameEndRegex = new Regex(@"^.*GameState.DebugPrintPower\(\) -\s*TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE\s*$");
-
-            foreach (var line in content.Split(new[] { "\r", "\n", "\r\n" }, StringSplitOptions.None))
+            Safe(() =>
             {
-                var gameInfoMatch = gameInfoRegex.Match(line);
-                if (gameInfoMatch.Success)
+                // This regex will match game information such as players and the type of game
+                var gameInfoRegex = new Regex(@"^.*GameState.DebugPrintGame\(\) - (.*)\=(.*)$");
+
+                // This regex will match a log line signalling that the game is over
+                var gameEndRegex = new Regex(@"^.*GameState.DebugPrintPower\(\) -\s*TAG_CHANGE Entity=GameEntity tag=STATE value=COMPLETE\s*$");
+
+                foreach (var line in content.Split(new[] { "\r", "\n", "\r\n" }, StringSplitOptions.None))
                 {
-                    var (key, value) = (gameInfoMatch.Groups[1].Value, gameInfoMatch.Groups[2].Value);
-                    switch (key)
+                    var gameInfoMatch = gameInfoRegex.Match(line);
+                    if (gameInfoMatch.Success)
                     {
-                        // Handle stuff
-                        case "GameType":
-                            _currentState.FieldValues["GameType"] = Utilities.HearthstoneNaming.GameTypeNames[value];
-                            break;
-                        case "FormatType":
-                            _currentState.FieldValues["Format"] = Utilities.HearthstoneNaming.FormatTypeNames[value];
-                            break;
-                        default:
-                            break;
+                        var (key, value) = (gameInfoMatch.Groups[1].Value, gameInfoMatch.Groups[2].Value);
+                        switch (key)
+                        {
+                            // Handle stuff
+                            case "GameType":
+                                _currentState.FieldValues["GameType"] = Utilities.HearthstoneNaming.GameTypeNames[value];
+                                break;
+                            case "FormatType":
+                                _currentState.FieldValues["Format"] = Utilities.HearthstoneNaming.FormatTypeNames[value];
+                                break;
+                            default:
+                                break;
+                        }
+                        continue;
                     }
-                    continue;
+
+                    var gameEndMatch = gameEndRegex.Match(line);
+                    if (gameEndMatch.Success)
+                    {
+                        _currentState.FieldValues.Remove("GameType");
+                        _currentState.FieldValues.Remove("Format");
+                    }
                 }
 
-                var gameEndMatch = gameEndRegex.Match(line);
-                if (gameEndMatch.Success)
+                _currentState.IconValues["None"] = new ImageBundle("", "");
+                _currentState.ImageValue = new ImageBundle("logo", "Hearthstone");
+
+                // If we've collected basic game information, broadcast the state
+                if (_currentState.FieldValues.ContainsKey("GameType") && _currentState.FieldValues.ContainsKey("Format"))
                 {
-                    _currentState.FieldValues.Remove("GameType");
-                    _currentState.FieldValues.Remove("Format");
+                    PushState(_currentState);
                 }
-            }
-
-            _currentState.IconValues["None"] = new ImageBundle("", "");
-            _currentState.ImageValue = new ImageBundle("logo", "Hearthstone");
-
-            // If we've collected basic game information, broadcast the state
-            if (_currentState.FieldValues.ContainsKey("GameType") && _currentState.FieldValues.ContainsKey("Format"))
-            {
-                PushState(_currentState);
-            }
-            else
-            {
-                _currentState.OverrideText = ("In menus", "");
-                PushState(_currentState);
-                _currentState.OverrideText = null;
-            }
+                else
+                {
+                    _currentState.OverrideText = ("In menus", "");
+                    PushState(_currentState);
+                    _currentState.OverrideText = null;
+                }
+            });
         }
 
         public override void Stop()
         {
-            _watcher.Abort();
+            Safe(() =>
+            {
+                _watcher.Abort();
+            });
         }
     }
 }

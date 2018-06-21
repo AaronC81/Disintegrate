@@ -49,14 +49,14 @@ namespace Disintegrate.UI
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(new TrayIconContext(args.Contains("show")));
             }
-            catch (Exception e)
+            catch (Exception exception)
             {
-#if DEBUG
-                throw;
-#else
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "/disintegrate-crash.log";
-                File.WriteAllText(path, e.Message + "\n" + e.StackTrace);
-#endif
+                var logContents = $@"The core Disintegrate app crashed.
+Details:
+{exception.Message}
+{exception.StackTrace}";
+
+                Crash.WriteLog(logContents);
             }
         }
     }

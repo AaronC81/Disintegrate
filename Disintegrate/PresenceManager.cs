@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Management;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Disintegrate
 {
@@ -80,6 +82,10 @@ namespace Disintegrate
             if (!processNames.Contains(soughtName))
             {
                 _active.Value.relay.Stop();
+
+                // We don't care about exceptions anymore
+                _active.Value.relay.Provider.ExceptionThrown -= ExceptionThrownByProvider;
+
                 _active = null;
             }
         }
@@ -98,6 +104,8 @@ namespace Disintegrate
                     {
                         var newProvider = kv.Value.MakeProvider();
 
+                        newProvider.ExceptionThrown += ExceptionThrownByProvider;
+
                         var newRelay = new PresenceRelay(newProvider);
                         newRelay.Start();
 
@@ -105,6 +113,16 @@ namespace Disintegrate
                     }
                 }
             }
+        }
+
+        public static void ExceptionThrownByProvider(PresenceProvider provider, Exception exception)
+        {
+            var logContents = $@"The app {provider.App.AppName} crashed.
+Details:
+{exception.Message}
+{exception.StackTrace}";
+
+            Crash.WriteLog(logContents);
         }
     }
 }

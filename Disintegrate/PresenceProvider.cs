@@ -8,6 +8,8 @@ namespace Disintegrate
 {
     public delegate void StateReadyEventArgs(PresenceProvider sender, PresenceState presenceInfo);
 
+    public delegate void ExceptionThrownEventArgs(PresenceProvider sender, Exception exception);
+
     /// <summary>
     /// Gathers data for a presence to be passed to a <see cref="PresenceFormatter"/>.
     /// </summary>
@@ -41,9 +43,36 @@ namespace Disintegrate
         public event StateReadyEventArgs StateReady;
 
         /// <summary>
+        /// An event fired when a worker/thread/etc throws a fatal exception.
+        /// </summary>
+        public event ExceptionThrownEventArgs ExceptionThrown;
+
+        /// <summary>
         /// Emits a new state.
         /// </summary>
         public void PushState(PresenceState presenceState) =>
             StateReady?.Invoke(this, presenceState);
+
+        /// <summary>
+        /// Signals that a worker/thread/etc has thrown a fatal exception.
+        /// </summary>
+        public void PushException(Exception exception) =>
+            ExceptionThrown?.Invoke(this, exception);
+
+        /// <summary>
+        /// Executes some code, pushing an exception properly if it crashes.
+        /// </summary>
+        /// <param name="action"></param>
+        public void Safe(Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception e)
+            {
+                PushException(e);
+            }
+        }
     }
 }

@@ -93,6 +93,7 @@
     <Compile Include="Configuration\Configurators\GlobalOffensiveConfigurator.cs" />
     <Compile Include="Configuration\Configurators\HearthstoneConfiguator.cs" />
     <Compile Include="Configuration\SteamLocator.cs" />
+    <Compile Include="Crash.cs" />
     <Compile Include="Customization\Customizer.cs" />
     <Compile Include="Customization\Customizers\Dota2Customizer.cs" />
     <Compile Include="Customization\Customizers\GlobalOffensiveCustomizer.cs" />

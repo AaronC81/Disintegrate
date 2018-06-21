@@ -26,16 +26,19 @@ namespace Disintegrate.Providers
 
         public override void Start()
         {
-            _gameStateListener = new GameStateListener(4000);
-            _gameStateListener.NewGameState += NewGameState;
-            _gameStateListener.Start();
-
-            _noStateTimer = new Timer(NoStateSeconds * 1000)
+            Safe(() =>
             {
-                Enabled = true,
-                AutoReset = false
-            };
-            _noStateTimer.Elapsed += NoGameState;
+                _gameStateListener = new GameStateListener(4000);
+                _gameStateListener.NewGameState += NewGameState;
+                _gameStateListener.Start();
+
+                _noStateTimer = new Timer(NoStateSeconds * 1000)
+                {
+                    Enabled = true,
+                    AutoReset = false
+                };
+                _noStateTimer.Elapsed += NoGameState;
+            });
         }
 
         /// <summary>
@@ -44,71 +47,74 @@ namespace Disintegrate.Providers
         /// <param name="gameState">The new game state.</param>
         public void NewGameState(GameState gameState)
         {
-            var newState = new PresenceState();
-
-            newState.ImageValue = new ImageBundle("logo", "CS:GO");
-
-            // The game broadcasts a '-1' state when started
-            if (gameState.Player.MatchStats.Deaths == -1)
+            Safe(() =>
             {
-                return;
-            }
+                var newState = new PresenceState();
 
-            // gameState.Player refers to the player we're watching, so if we're dead, 
-            // it's the person we're spectating
-            // If the player isn't us, reset the timer but don't update any presence info
-            if (gameState.Player.SteamID != gameState.Provider.SteamID)
-            {
+                newState.ImageValue = new ImageBundle("logo", "CS:GO");
+
+                // The game broadcasts a '-1' state when started
+                if (gameState.Player.MatchStats.Deaths == -1)
+                {
+                    return;
+                }
+
+                // gameState.Player refers to the player we're watching, so if we're dead, 
+                // it's the person we're spectating
+                // If the player isn't us, reset the timer but don't update any presence info
+                if (gameState.Player.SteamID != gameState.Provider.SteamID)
+                {
+                    _noStateTimer.Stop();
+                    _noStateTimer.Start();
+
+                    return;
+                }
+
+                newState.FieldValues["Kills"] = gameState.Player.MatchStats.Kills.ToString();
+                newState.FieldValues["Deaths"] = gameState.Player.MatchStats.Deaths.ToString();
+                newState.FieldValues["Assists"] = gameState.Player.MatchStats.Assists.ToString();
+                newState.FieldValues["MVPs"] = gameState.Player.MatchStats.MVPs.ToString();
+                newState.FieldValues["Map"] = gameState.Map.Name;
+                newState.FieldValues["Mode"] = Utilities.GlobalOffensiveNaming.ModeNames[gameState.Map.Mode];
+
+                // The Team and Score fields depend on your team
+                switch (gameState.Player.Team)
+                {
+                    case CSGSI.Nodes.PlayerTeam.T:
+                        newState.FieldValues["Team"] = "Terrorists";
+                        newState.FieldValues["Score"] = $"T {gameState.Map.TeamT.Score} - {gameState.Map.TeamCT.Score} CT";
+                        break;
+                    case CSGSI.Nodes.PlayerTeam.CT:
+                        newState.FieldValues["Team"] = "Counter-Terrorists";
+                        newState.FieldValues["Score"] = $"CT {gameState.Map.TeamCT.Score} - {gameState.Map.TeamT.Score} T";
+                        break;
+                    default:
+                        newState.FieldValues["Team"] = "Unknown team";
+                        newState.FieldValues["Score"] = $"CT {gameState.Map.TeamCT.Score} - {gameState.Map.TeamT.Score} T";
+                        break;
+                }
+
+                // If they want no icon, create a blank icon
+                newState.IconValues["None"] = new ImageBundle("", "");
+
+                // If they want a team icon, find out which team they're on
+                if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.T)
+                {
+                    newState.IconValues["Team"] = new ImageBundle("t", "Terrorists");
+                }
+                else if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.CT)
+                {
+                    newState.IconValues["Team"] = new ImageBundle("ct", "Counter-Terrorists");
+                }
+                else
+                {
+                    newState.IconValues["Team"] = new ImageBundle("", "");
+                }
+
+                PushState(newState);
                 _noStateTimer.Stop();
                 _noStateTimer.Start();
-
-                return;
-            }
-
-            newState.FieldValues["Kills"] = gameState.Player.MatchStats.Kills.ToString();
-            newState.FieldValues["Deaths"] = gameState.Player.MatchStats.Deaths.ToString();
-            newState.FieldValues["Assists"] = gameState.Player.MatchStats.Assists.ToString();
-            newState.FieldValues["MVPs"] = gameState.Player.MatchStats.MVPs.ToString();
-            newState.FieldValues["Map"] = gameState.Map.Name;
-            newState.FieldValues["Mode"] = Utilities.GlobalOffensiveNaming.ModeNames[gameState.Map.Mode];
-
-            // The Team and Score fields depend on your team
-            switch (gameState.Player.Team)
-            {
-                case CSGSI.Nodes.PlayerTeam.T:
-                    newState.FieldValues["Team"] = "Terrorists";
-                    newState.FieldValues["Score"] = $"T {gameState.Map.TeamT.Score} - {gameState.Map.TeamCT.Score} CT";
-                    break;
-                case CSGSI.Nodes.PlayerTeam.CT:
-                    newState.FieldValues["Team"] = "Counter-Terrorists";
-                    newState.FieldValues["Score"] = $"CT {gameState.Map.TeamCT.Score} - {gameState.Map.TeamT.Score} T";
-                    break;
-                default:
-                    newState.FieldValues["Team"] = "Unknown team";
-                    newState.FieldValues["Score"] = $"CT {gameState.Map.TeamCT.Score} - {gameState.Map.TeamT.Score} T";
-                    break;
-            }
-
-            // If they want no icon, create a blank icon
-            newState.IconValues["None"] = new ImageBundle("", "");
-
-            // If they want a team icon, find out which team they're on
-            if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.T)
-            {
-                newState.IconValues["Team"] = new ImageBundle("t", "Terrorists");
-            }
-            else if (gameState.Player.Team == CSGSI.Nodes.PlayerTeam.CT)
-            {
-                newState.IconValues["Team"] = new ImageBundle("ct", "Counter-Terrorists");
-            }
-            else
-            {
-                newState.IconValues["Team"] = new ImageBundle("", "");
-            }
-
-            PushState(newState);
-            _noStateTimer.Stop();
-            _noStateTimer.Start();
+            });
         }
 
         /// <summary>
@@ -117,14 +123,21 @@ namespace Disintegrate.Providers
         /// </summary>
         public void NoGameState(object o, ElapsedEventArgs e)
         {
-            PushState(new PresenceState("In menus", "") {
-                ImageValue = new ImageBundle("logo", "CS:GO")
+            Safe(() =>
+            {
+                PushState(new PresenceState("In menus", "")
+                {
+                    ImageValue = new ImageBundle("logo", "CS:GO")
+                });
             });
         }
 
         public override void Stop()
         {
-            _gameStateListener.Stop();
+            Safe(() =>
+            {
+                _gameStateListener.Stop();
+            });
         }
     }
 }
