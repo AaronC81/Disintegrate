@@ -36,6 +36,11 @@ namespace Disintegrate
         protected Preferences _cachedPreferences;
         public Preferences CachedPreferences => _cachedPreferences ?? LoadPreferences();
 
+        public void ClearCachedPreferences()
+        {
+            _cachedPreferences = null;
+        }
+
         public Preferences LoadPreferences()
         {
             _cachedPreferences = Loader.LoadPreferences(this);

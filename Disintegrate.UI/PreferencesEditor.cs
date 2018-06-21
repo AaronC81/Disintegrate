@@ -133,6 +133,9 @@ namespace Disintegrate.UI
         {
             Loader.SavePreferences(App, Preferences);
             MessageBox.Show("Saved your preferences.");
+
+            App.ClearCachedPreferences();
+
             Close();
         }
     }
