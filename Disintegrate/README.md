@@ -35,6 +35,18 @@ There are two main kinds of provider, determined by the value of the object's `S
     few seconds is actually sent to Discord to avoid the API becoming 
     overwhelmed and rejecting future states.
 
+When a provider does anything, it should be done within a call to `Safe`. For example:
+
+```
+public override void Start() {
+	Safe(() => {
+		// Setup
+	})
+}
+```
+
+This enables logging and crash recovery.
+
 ### `PresenceRelay`
 This class wraps a `PresenceProvider` and sends its state on to Discord based
 on its `StateFrequency`.
