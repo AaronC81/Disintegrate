@@ -33,7 +33,12 @@ namespace Disintegrate.UI
             gameTableLayout.Controls.Clear();
 
             var version = Assembly.GetEntryAssembly().GetName().Version;
-            versionLabel.Text = $"Version {version}";
+            versionLabel.Text = $"{version}";
+
+            int currentColumn = 1;
+            gameTableLayout.ColumnCount = PresenceManager.Apps.Count;
+
+            gameTableLayout.ColumnStyles.Clear();
 
             foreach (var kv in PresenceManager.Apps)
             {
@@ -51,12 +56,13 @@ namespace Disintegrate.UI
                     editor.ShowDialog();
                     Menu_Load(sender, _);
                 };
-                gameTableLayout.Controls.Add(gameEntry);
-            }
 
-            foreach (RowStyle style in gameTableLayout.RowStyles)
-            {
-                style.SizeType = SizeType.AutoSize;
+                gameTableLayout.Controls.Add(gameEntry);
+                gameTableLayout.SetColumn(gameEntry, currentColumn);
+
+                gameTableLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, (float)100 / PresenceManager.Apps.Count));
+
+                currentColumn++;
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Disintegrate.Apps
         public override string AppName => "Hearthstone";
         public override string AppId => "459027202449866782";
         public override string ProcessName => "Hearthstone";
+        public override Image Logo => Properties.Resources.HearthstoneLogo;
         public override bool WorkInProgress => true;
         public override Customizer Customizer => new Customization.Customizers.HearthstoneCustomizer();
 

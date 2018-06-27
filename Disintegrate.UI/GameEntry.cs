@@ -33,9 +33,14 @@ namespace Disintegrate.UI
             {
                 _configurator = value;
 
-                gameNameLabel.Text = _app.AppName;
+                gameNameLabel.Text = _app.AppName ?? "???";
 
-                if (_configurator.IsConfigured())
+                if (_configurator == null)
+                {
+                    configureButton.Enabled = false;
+                    configureButton.Text = "???";
+                }
+                else if (_configurator.IsConfigured())
                 {
                     configureButton.Enabled = false;
                     configureButton.Text = "Configured";
@@ -53,9 +58,18 @@ namespace Disintegrate.UI
 
         private void GameEntry_Load(object sender, EventArgs e)
         {
+            if (_app == null)
+            {
+                wipLabel.Text = "???";
+                return;
+            }
+
             wipLabel.Text = _app.WorkInProgress
                 ? "Work in progress"
                 : "";
+
+            logoPictureBox.Image = _app.Logo;
+            logoPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
         }
     }
 }

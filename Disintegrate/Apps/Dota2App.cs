@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Disintegrate.Apps
         public override string AppName => "DOTA 2";
         public override string AppId => "457208839205289984";
         public override string ProcessName => "dota2";
+        public override Image Logo => Properties.Resources.DotaLogo;
         public override Customizer Customizer => new Customization.Customizers.Dota2Customizer();
 
         public override Configurator Configurator => new Configuration.Configurators.Dota2Configurator();

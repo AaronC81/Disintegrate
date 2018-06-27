@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,7 @@ namespace Disintegrate
         public abstract string AppName { get; }
         public abstract string AppId { get; }
         public abstract string ProcessName { get; }
+        public abstract Image Logo { get; }
         public virtual bool WorkInProgress => false;
 
         public abstract Customizer Customizer { get; }

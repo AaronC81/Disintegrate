@@ -147,6 +147,9 @@
     <Content Include="discord-rpc-w32.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\hearthstonelogo.png" />
+    <None Include="Resources\globaloffensivelogo.png" />
+    <None Include="Resources\dotalogo.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
