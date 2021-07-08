@@ -58,6 +58,7 @@ namespace Disintegrate.Utilities
             ["npc_dota_hero_faceless_void"] = "Faceless Void",
             ["npc_dota_hero_grimstroke"] = "Grimstroke",
             ["npc_dota_hero_gyrocopter"] = "Gyrocopter",
+            ["npc_dota_hero_hoodwink"] = "Hoodwink",
             ["npc_dota_hero_huskar"] = "Huskar",
             ["npc_dota_hero_invoker"] = "Invoker",
             ["npc_dota_hero_wisp"] = "Io",
