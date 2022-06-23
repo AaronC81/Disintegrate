@@ -1,6 +1,6 @@
 # Disintegrate
 Disintegrate adds **Discord Rich Presence to CS:GO and DOTA 2.** For more
-information, see [disint.cc](disint.cc).
+information, see [disint.cc](https://disint.cc).
 
 ## Project Structure
 The Disintegrate solution has two projects:
